@@ -10,9 +10,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // nested class to define nodes
     private class Node {
-        private Item item;
-        private Node next;
-        private Node previous;
+        Item item;
+        Node next;
+        Node previous;
     }
 
     // construct an empty randomized queue
@@ -98,18 +98,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new java.util.NoSuchElementException();
         }
 
-        int random = StdRandom.uniform(1, size());
+        Node current = first;
+        int random = StdRandom.uniform(1, size() + 1);
 
-        Iterator<Item> iterator = iterator();
-
-        while (random >= 0) {
-            if (iterator.hasNext()) {
-                item = iterator.next();
-                random--;
-            }
+        while (random > 1) {
+            random--;
+            current = current.next;
         }
-
-        return item;
+        return current.item;
     }
 
     // return an independent iterator over items in random order

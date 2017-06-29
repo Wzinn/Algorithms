@@ -13,9 +13,9 @@ public class Deque<Item> implements Iterable<Item> {
 
     // nested class to define nodes
     private class Node {
-       private Item item;
-       private Node next;
-       private Node previous;
+       Item item;
+       Node next;
+       Node previous;
     }
 
     // construct an empty deque
@@ -26,7 +26,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // is the deque empty?
     public boolean isEmpty() {
-        return first == null || last == null;
+        return n == 0;
     }
 
     // return the number of items on the deque
@@ -39,6 +39,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (item == null) {
             throw new java.lang.IllegalArgumentException();
         }
+
         Node oldFirst = first;
         first = new Node();
         first.item = item;
@@ -47,8 +48,11 @@ public class Deque<Item> implements Iterable<Item> {
 
         if (isEmpty()) {
             last =  first;
+        } else if (oldFirst == last) {
+            oldFirst.next = null;
+            oldFirst.previous = first;
         } else {
-            oldFirst.next = last;
+//            oldFirst.next = last; //TODO bug
             oldFirst.previous = first;
         }
         n++;
@@ -121,10 +125,12 @@ public class Deque<Item> implements Iterable<Item> {
             public boolean hasNext() {
                 return current != null;
             }
+
             @Override
             public void remove() {
                 throw new java.lang.UnsupportedOperationException();
             }
+
             @Override
             public Item next() {
                 if (!hasNext()) {
@@ -136,5 +142,4 @@ public class Deque<Item> implements Iterable<Item> {
             }
         };
     }
-
 }

@@ -1,11 +1,8 @@
 import java.util.Iterator;
 
-/***
- * A double-ended queue or deque is a generalization of a stack and a queue that supports
- * adding and removing items from either the front or the back of the data structure.
- ***/
+import edu.princeton.cs.algs4.StdRandom;
 
-public class Deque<Item> implements Iterable<Item> {
+public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Node first; // link to least recent added node
     private Node last; //link to recently added node
@@ -18,47 +15,28 @@ public class Deque<Item> implements Iterable<Item> {
         Node previous;
     }
 
-    // construct an empty deque
-    public Deque() {
+    // construct an empty randomized queue
+    public RandomizedQueue() {
         first = null;
         last = null;
     }
 
-    // is the deque empty?
+    // is the queue empty?
     public boolean isEmpty() {
         return first == null || last == null;
     }
 
-    // return the number of items on the deque
+    // return the number of items on the queue
     public int size() {
         return N;
     }
 
-    // add the item to the front
-    public void addFirst(Item item) {
+    // add the item
+    public void enqueue(Item item) {
         if (item == null) {
             throw new java.lang.IllegalArgumentException();
         }
-        Node oldFirst = first;
-        first = new Node();
-        first.item = item;
-        first.next = oldFirst;
-        first.previous = null;
 
-        if (isEmpty()) {
-            last =  first;
-        } else {
-            oldFirst.next = last;
-            oldFirst.previous = first;
-        }
-        N++;
-    }
-
-    // add the item to the end
-    public void addLast(Item item) {
-        if (item == null) {
-            throw new java.lang.IllegalArgumentException();
-        }
         Node oldLast = last;
         last = new Node();
         last.item = item;
@@ -73,48 +51,63 @@ public class Deque<Item> implements Iterable<Item> {
         N++;
     }
 
-    // remove and return the item from the front
-    public Item removeFirst() {
-        if (isEmpty()){
-            throw new java.util.NoSuchElementException();
-        }
+    // remove and return a random item
+    public Item dequeue() {
+        Node current = first;
+        int random = StdRandom.uniform(1, size() + 1);
 
-        Item item = first.item;
-        first = first.next;
-        if (first != null) {
+        if (random == 1) {
+            System.out.println("random = " + random);
+            Node oldFirst = first;
+            first = oldFirst.next;
             first.previous = null;
-
+            N--;
+            return oldFirst.item;
         }
 
-        if (isEmpty()) {
-            first = null;
-            last = null;
+        if (random == size()) {
+            System.out.println("random " + random);
+            Node oldLast = last;
+            last = oldLast.previous;
+            last.next = null;
+            N--;
+            return oldLast.item;
         }
+
+        System.out.println("random = " + random);
+        while (random > 1) {
+            random --;
+            current = current.next;
+        }
+
+        current.previous.next = current.next;
+        current.next.previous = current.previous;
         N--;
-        return item;
+        return current.item;
     }
 
-    // remove and return the item from the end
-    public Item removeLast() {
-        if (isEmpty()){
+    // return (but do not remove) a random item
+    public Item sample() {
+        Item item = null;
+        if (isEmpty()) {
             throw new java.util.NoSuchElementException();
         }
 
-        Item item = last.item;
-        last = last.previous;
-        if (last != null) {
-            last.next = null;
+        int random = StdRandom.uniform(1, size());
+
+        Iterator<Item> iterator = iterator();
+
+        while (random >= 0) {
+            if (iterator.hasNext()) {
+                item = iterator.next();
+                random--;
+            }
         }
 
-        if (isEmpty()) {
-            first = null;
-            last = null;
-        }
-        N--;
         return item;
     }
 
-    // return an iterator over items in order from front to
+    // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
         return new Iterator<Item>(){
             private Node current = first;

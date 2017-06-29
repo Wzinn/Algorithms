@@ -5,14 +5,14 @@ import edu.princeton.cs.algs4.StdRandom;
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Node first; // link to least recent added node
-    private Node last; //link to recently added node
-    private int N; // number of items on deque
+    private Node last; // link to recently added node
+    private int n; // number of items on deque
 
-    //nested class to define nodes
+    // nested class to define nodes
     private class Node {
-        Item item;
-        Node next;
-        Node previous;
+        private Item item;
+        private Node next;
+        private Node previous;
     }
 
     // construct an empty randomized queue
@@ -28,7 +28,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return the number of items on the queue
     public int size() {
-        return N;
+        return n;
     }
 
     // add the item
@@ -48,41 +48,46 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         } else {
             oldLast.next = last;
         }
-        N++;
+        n++;
     }
 
     // remove and return a random item
     public Item dequeue() {
+
+        if (isEmpty()) {
+            throw new java.util.NoSuchElementException();
+        }
+
         Node current = first;
         int random = StdRandom.uniform(1, size() + 1);
 
         if (random == 1) {
-            System.out.println("random = " + random);
             Node oldFirst = first;
             first = oldFirst.next;
-            first.previous = null;
-            N--;
+            if (first != null) {
+                first.previous = null;
+
+            }
+            n--;
             return oldFirst.item;
         }
 
         if (random == size()) {
-            System.out.println("random " + random);
             Node oldLast = last;
             last = oldLast.previous;
             last.next = null;
-            N--;
+            n--;
             return oldLast.item;
         }
 
-        System.out.println("random = " + random);
         while (random > 1) {
-            random --;
+            random--;
             current = current.next;
         }
 
         current.previous.next = current.next;
         current.next.previous = current.previous;
-        N--;
+        n--;
         return current.item;
     }
 
@@ -109,18 +114,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
-        return new Iterator<Item>(){
+        return new Iterator<Item>() {
             private Node current = first;
-
             public boolean hasNext() {
                 return current != null;
             }
-
             @Override
             public void remove() {
                 throw new java.lang.UnsupportedOperationException();
             }
-
             @Override
             public Item next() {
                 if (!hasNext()) {
@@ -131,11 +133,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 return item;
             }
         };
-    }
-
-    // unit testing (optional)
-    public static void main(String[] args) {
-
     }
 
 }

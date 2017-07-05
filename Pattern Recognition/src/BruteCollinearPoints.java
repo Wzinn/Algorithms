@@ -29,25 +29,25 @@ public class BruteCollinearPoints {
             }
         }
 
-        ArrayList<LineSegment> collinearPoints = new ArrayList<>();
+        ArrayList<LineSegment> lineSegments = new ArrayList<>();
 
         Point[] sortedPoints =  Arrays.copyOf(points, points.length);
         Arrays.sort(sortedPoints);
 
-        for (int p = 0; p < sortedPoints.length - 3; p++) {
-            for (int q = p + 1; q < sortedPoints.length - 2; q++) {
-                for (int r = q + 1; r < sortedPoints.length - 1; r++) {
-                    for (int s = r + 1; s < sortedPoints.length; s++) {
+        for (int p = 0; p < points.length - 3; p++) {
+            for (int q = p + 1; q < points.length - 2; q++) {
+                for (int r = q + 1; r < points.length - 1; r++) {
+                    for (int s = r + 1; s < points.length; s++) {
                         if (sortedPoints[p].slopeTo(sortedPoints[q]) == sortedPoints[p].slopeTo(sortedPoints[r]) &&
                                 sortedPoints[p].slopeTo(sortedPoints[q]) == sortedPoints[p].slopeTo(sortedPoints[s])) {
-                            collinearPoints.add(new LineSegment(sortedPoints[p], sortedPoints[s]));
+                            lineSegments.add(new LineSegment(sortedPoints[p], sortedPoints[s]));
                         }
                     }
                 }
             }
         }
 
-        segments = collinearPoints.toArray(new LineSegment[collinearPoints.size()]);
+        segments = lineSegments.toArray(new LineSegment[lineSegments.size()]);
 
     }
 
